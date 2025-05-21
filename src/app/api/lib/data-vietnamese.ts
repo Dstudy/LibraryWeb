@@ -314,7 +314,7 @@ export const getLendingRecords = async (readerId?: string): Promise<LendingRecor
   try {
     let query = `
       SELECT lm.ID as id, sm.IDSach as bookId, s.TieuDe as bookName,
-             bd.ID as readerId, lm.NgayMuon as borrowDate,
+             bd.ID as readerId, bd.Ten as readerName, lm.NgayMuon as borrowDate,
              lm.NgayCanTra as dueDate, lm.NgayTra as returnDate
       FROM luotmuon lm
       JOIN bandoc bd ON lm.IDBanDoc = bd.ID
@@ -338,6 +338,7 @@ export const getLendingRecords = async (readerId?: string): Promise<LendingRecor
       bookId: row.bookId,
       bookName: row.bookName,
       readerId: row.readerId,
+      readerName: row.readerName,
       borrowDate: new Date(row.borrowDate),
       dueDate: new Date(row.dueDate),
       returnDate: row.returnDate ? new Date(row.returnDate) : null
@@ -352,7 +353,7 @@ export const getLendingRecordById = async (id: number): Promise<LendingRecord | 
   try {
     const [rows] = await pool.query<RowDataPacket[]>(`
       SELECT lm.ID as id, sm.IDSach as bookId, s.TieuDe as bookName,
-             bd.ID as readerId, lm.NgayMuon as borrowDate,
+             bd.ID as readerId, bd.Ten as readerName, lm.NgayMuon as borrowDate,
              lm.NgayCanTra as dueDate, lm.NgayTra as returnDate
       FROM luotmuon lm
       JOIN bandoc bd ON lm.IDBanDoc = bd.ID
@@ -371,6 +372,7 @@ export const getLendingRecordById = async (id: number): Promise<LendingRecord | 
       bookId: row.bookId,
       bookName: row.bookName,
       readerId: row.readerId,
+      readerName: row.readerName,
       borrowDate: new Date(row.borrowDate),
       dueDate: new Date(row.dueDate),
       returnDate: row.returnDate ? new Date(row.returnDate) : null

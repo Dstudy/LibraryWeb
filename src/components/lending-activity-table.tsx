@@ -86,7 +86,7 @@ export function LendingActivityTable({
         <TableHeader>
           <TableRow className="bg-muted/50 hover:bg-muted/50">
             <TableHead className="min-w-[10rem]">Book Name</TableHead>
-            <TableHead className="min-w-[12rem]">Borrower Email</TableHead>
+            <TableHead className="min-w-[12rem]">Reader Name</TableHead>
             <TableHead className="min-w-[8rem] whitespace-nowrap">
               Borrow Date
             </TableHead>
@@ -119,7 +119,7 @@ export function LendingActivityTable({
                 className="hover:bg-accent/10 transition-colors"
               >
                 <TableCell>{record.bookName}</TableCell>
-                <TableCell>{record.userEmail}</TableCell>
+                <TableCell>{record.readerName || record.readerId}</TableCell>
                 <TableCell className="whitespace-nowrap">
                   {format(new Date(record.borrowDate), "MMM dd, yyyy")}
                 </TableCell>

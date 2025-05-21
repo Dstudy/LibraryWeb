@@ -20,6 +20,7 @@ export const lendingRecordSchema = z.object({
   bookId: z.union([z.string(), z.number()]),
   bookName: z.string(), // For easier display
   readerId: z.string().min(1, { message: "Reader ID is required." }),
+  readerName: z.string().optional(), // Added for displaying reader name
   borrowDate: z.date(),
   dueDate: z.date(),
   returnDate: z.date().nullable().optional(),

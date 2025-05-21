@@ -1,20 +1,25 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import type { LendingRecord } from "@/lib/types";
 import { LendingActivityTable } from "@/components/lending-activity-table";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, ArrowRightLeft } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { PlusCircle, ArrowRightLeft, Search as SearchIcon } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BorrowBookDialog } from "@/components/borrow-book-dialog";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/auth";
 import { useRouter } from "next/navigation";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { isPast } from "date-fns";
 
 export default function LendingPage() {
   const [lendingRecords, setLendingRecords] = useState<LendingRecord[]>([]);
   const [isBorrowDialogOpen, setIsBorrowDialogOpen] = useState(false);
   const [isDataLoading, setIsDataLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
   const { toast } = useToast();
   const { isAuthenticated, authIsLoading, currentUser } = useAuth();
   const router = useRouter();
@@ -66,6 +71,33 @@ export default function LendingPage() {
     }
   }, [toast, isAuthenticated, currentUser]);
 
+  // Filter records based on search term and status filter
+  const filteredRecords = useMemo(() => {
+    return lendingRecords.filter((record) => {
+      // Apply search filter
+      const searchLower = searchTerm.toLowerCase();
+      const matchesSearch =
+        searchTerm === "" ||
+        record.bookId.toString().toLowerCase().includes(searchLower) ||
+        record.bookName.toLowerCase().includes(searchLower) ||
+        record.readerId.toLowerCase().includes(searchLower) ||
+        (record.readerName &&
+          record.readerName.toLowerCase().includes(searchLower));
+
+      // Apply status filter
+      let matchesStatus = true;
+      if (statusFilter === "borrowed") {
+        matchesStatus = !record.returnDate && !isPast(new Date(record.dueDate));
+      } else if (statusFilter === "overdue") {
+        matchesStatus = !record.returnDate && isPast(new Date(record.dueDate));
+      } else if (statusFilter === "returned") {
+        matchesStatus = !!record.returnDate;
+      }
+
+      return matchesSearch && matchesStatus;
+    });
+  }, [lendingRecords, searchTerm, statusFilter]);
+
   useEffect(() => {
     if (authIsLoading) return;
 
@@ -105,21 +137,92 @@ export default function LendingPage() {
 
       <Card className="shadow-xl w-full">
         <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle className="text-2xl flex items-center">
-              <ArrowRightLeft className="mr-3 h-7 w-7 text-accent" />
-              {currentUser?.role === "librarian"
-                ? "Lending Activity"
-                : "My Borrowing History"}
-            </CardTitle>
-            {currentUser?.role === "librarian" && (
-              <Button
-                onClick={() => setIsBorrowDialogOpen(true)}
-                className="bg-primary hover:bg-primary/90"
+          <div className="flex flex-col space-y-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <CardTitle className="text-2xl flex items-center">
+                <ArrowRightLeft className="mr-3 h-7 w-7 text-accent" />
+                {currentUser?.role === "librarian"
+                  ? "Lending Activity"
+                  : "My Borrowing History"}
+              </CardTitle>
+              {currentUser?.role === "librarian" && (
+                <Button
+                  onClick={() => setIsBorrowDialogOpen(true)}
+                  className="bg-primary hover:bg-primary/90"
+                >
+                  <PlusCircle className="mr-2 h-5 w-5" /> Borrow Book
+                </Button>
+              )}
+            </div>
+
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full">
+              <div className="relative w-full sm:w-64">
+                <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                <Input
+                  type="search"
+                  placeholder="Search by reader or book ID..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10 w-full"
+                  aria-label="Search lending records"
+                />
+              </div>
+
+              <Tabs
+                defaultValue="all"
+                value={statusFilter}
+                onValueChange={setStatusFilter}
+                className="w-full sm:w-auto"
               >
-                <PlusCircle className="mr-2 h-5 w-5" /> Borrow Book
-              </Button>
-            )}
+                <TabsList className="grid grid-cols-4 w-full">
+                  <TabsTrigger value="all">
+                    All
+                    {lendingRecords.length > 0 && (
+                      <span className="ml-1 text-xs bg-primary/20 rounded-full px-2 py-0.5">
+                        {lendingRecords.length}
+                      </span>
+                    )}
+                  </TabsTrigger>
+                  <TabsTrigger value="borrowed">
+                    Borrowed
+                    {lendingRecords.filter(
+                      (r) => !r.returnDate && !isPast(new Date(r.dueDate))
+                    ).length > 0 && (
+                      <span className="ml-1 text-xs bg-primary/20 rounded-full px-2 py-0.5">
+                        {
+                          lendingRecords.filter(
+                            (r) => !r.returnDate && !isPast(new Date(r.dueDate))
+                          ).length
+                        }
+                      </span>
+                    )}
+                  </TabsTrigger>
+                  <TabsTrigger value="overdue">
+                    Overdue
+                    {lendingRecords.filter(
+                      (r) => !r.returnDate && isPast(new Date(r.dueDate))
+                    ).length > 0 && (
+                      <span className="ml-1 text-xs bg-destructive/20 rounded-full px-2 py-0.5 text-destructive">
+                        {
+                          lendingRecords.filter(
+                            (r) => !r.returnDate && isPast(new Date(r.dueDate))
+                          ).length
+                        }
+                      </span>
+                    )}
+                  </TabsTrigger>
+                  <TabsTrigger value="returned">
+                    Returned
+                    {lendingRecords.filter((r) => !!r.returnDate).length >
+                      0 && (
+                      <span className="ml-1 text-xs bg-primary/20 rounded-full px-2 py-0.5">
+                        {lendingRecords.filter((r) => !!r.returnDate).length}
+                      </span>
+                    )}
+                  </TabsTrigger>
+                </TabsList>
+              </Tabs>
+            </div>
           </div>
         </CardHeader>
         <CardContent>
@@ -132,11 +235,30 @@ export default function LendingPage() {
               </p>
             </div>
           ) : (
-            <LendingActivityTable
-              records={lendingRecords}
-              onRecordUpdate={fetchData}
-              userRole={currentUser?.role}
-            />
+            <>
+              <div className="mb-4 text-sm text-muted-foreground">
+                {searchTerm && (
+                  <span>
+                    Search results for <strong>"{searchTerm}"</strong>:{" "}
+                  </span>
+                )}
+                <span>
+                  Showing <strong>{filteredRecords.length}</strong> of{" "}
+                  <strong>{lendingRecords.length}</strong> records
+                  {statusFilter !== "all" && (
+                    <span>
+                      {" "}
+                      (filtered by <strong>{statusFilter}</strong>)
+                    </span>
+                  )}
+                </span>
+              </div>
+              <LendingActivityTable
+                records={filteredRecords}
+                onRecordUpdate={fetchData}
+                userRole={currentUser?.role}
+              />
+            </>
           )}
         </CardContent>
       </Card>

@@ -25,7 +25,7 @@ import { Reader } from "@/app/api/readers/route";
 
 // Define the form schema
 const readerFormSchema = z.object({
-  id: z.string().min(1, { message: "Reader ID is required" }),
+  id: z.string().optional(), // ID is now optional as it will be auto-generated
   name: z.string().min(1, { message: "Name is required" }),
   phone: z.string().optional(),
   address: z.string().optional(),
@@ -75,24 +75,6 @@ export function ReaderForm({
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <FormField
-            control={form.control}
-            name="id"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Reader ID</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Enter reader ID"
-                    {...field}
-                    disabled={!!initialData}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
           <FormField
             control={form.control}
             name="name"

@@ -47,27 +47,25 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { id, name, phone, address, dateOfBirth, gender } = body;
+    const { name, phone, address, dateOfBirth, gender } = body;
 
-    if (!id || !name) {
+    if (!name) {
       return NextResponse.json(
-        { error: 'Reader ID and name are required' },
+        { error: 'Reader name is required' },
         { status: 400 }
       );
     }
 
-    // Check if reader with this ID already exists
-    const [existingReaders] = await pool.query<RowDataPacket[]>(
-      'SELECT * FROM bandoc WHERE ID = ?',
-      [id]
+    // Generate a new reader ID with prefix 'BD'
+    const readerIdPrefix = 'BD';
+    const [maxIdResult] = await pool.query<RowDataPacket[]>(
+      'SELECT MAX(ID) as maxId FROM bandoc WHERE ID LIKE ?',
+      [`${readerIdPrefix}%`]
     );
 
-    if (existingReaders.length > 0) {
-      return NextResponse.json(
-        { error: 'A reader with this ID already exists' },
-        { status: 409 }
-      );
-    }
+    const maxId = maxIdResult[0].maxId || `${readerIdPrefix}000`;
+    const numericPart = parseInt(maxId.substring(readerIdPrefix.length)) + 1;
+    const newId = `${readerIdPrefix}${numericPart.toString().padStart(3, '0')}`;
 
     // Format date for MySQL
     let formattedDate = null;
@@ -77,12 +75,12 @@ export async function POST(request: NextRequest) {
 
     const [result] = await pool.query<ResultSetHeader>(
       'INSERT INTO bandoc (ID, Ten, SDT, DiaChi, NgaySinh, GioiTinh) VALUES (?, ?, ?, ?, ?, ?)',
-      [id, name, phone || null, address || null, formattedDate, gender || null]
+      [newId, name, phone || null, address || null, formattedDate, gender || null]
     );
 
     if (result.affectedRows === 1) {
       const newReader = {
-        id,
+        id: newId,
         name,
         phone: phone || null,
         address: address || null,
