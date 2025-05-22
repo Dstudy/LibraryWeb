@@ -547,11 +547,32 @@ export const addNotification = async (notificationData: Omit<Notification, 'id' 
 
       const timestamp = new Date();
 
-      // Insert the notification
-      const [result] = await connection.query<ResultSetHeader>(
-        'INSERT INTO thongbao (IDBanDoc, NoiDung, NgayThongBao) VALUES (?, ?, ?)',
-        [readerId, notificationData.message, timestamp]
+      // Check if DaDoc column exists
+      const [columns] = await connection.query<RowDataPacket[]>(
+        `SELECT COLUMN_NAME
+         FROM INFORMATION_SCHEMA.COLUMNS
+         WHERE TABLE_SCHEMA = DATABASE()
+         AND TABLE_NAME = 'thongbao'
+         AND COLUMN_NAME = 'DaDoc'`
       );
+
+      // @ts-ignore
+      const hasDaDocColumn = columns.length > 0;
+      console.log('Has DaDoc column in addNotification:', hasDaDocColumn);
+
+      // Insert the notification with or without DaDoc field
+      let result;
+      if (hasDaDocColumn) {
+        [result] = await connection.query<ResultSetHeader>(
+          'INSERT INTO thongbao (IDBanDoc, NoiDung, NgayThongBao, DaDoc, IDLuotMuon) VALUES (?, ?, ?, ?, NULL)',
+          [readerId, notificationData.message, timestamp, false]
+        );
+      } else {
+        [result] = await connection.query<ResultSetHeader>(
+          'INSERT INTO thongbao (IDBanDoc, NoiDung, NgayThongBao, IDLuotMuon) VALUES (?, ?, ?, NULL)',
+          [readerId, notificationData.message, timestamp]
+        );
+      }
 
       await connection.commit();
 
@@ -587,15 +608,40 @@ export const getNotificationsByUserId = async (userId: string): Promise<Notifica
 
     const readerId = readerRows[0].ID;
 
-    const [rows] = await pool.query<RowDataPacket[]>(
-      `SELECT tb.IDthongbao as id, tb.IDBanDoc as userId, tb.NoiDung as message,
-              'general' as type, tb.NgayThongBao as timestamp,
-              FALSE as isRead
+    // First check if DaDoc column exists
+    const [columns] = await pool.query<RowDataPacket[]>(
+      `SELECT COLUMN_NAME
+       FROM INFORMATION_SCHEMA.COLUMNS
+       WHERE TABLE_SCHEMA = DATABASE()
+       AND TABLE_NAME = 'thongbao'
+       AND COLUMN_NAME = 'DaDoc'`
+    );
+
+    // @ts-ignore
+    const hasDaDocColumn = columns.length > 0;
+    console.log('Has DaDoc column:', hasDaDocColumn);
+
+    let query = `
+      SELECT tb.IDthongbao as id, tb.IDBanDoc as userId, tb.NoiDung as message,
+             'general' as type, tb.NgayThongBao as timestamp
+    `;
+
+    // Add DaDoc field if it exists, otherwise default to FALSE
+    if (hasDaDocColumn) {
+      query += `, tb.DaDoc as isRead`;
+    } else {
+      query += `, FALSE as isRead`;
+    }
+
+    query += `
        FROM thongbao tb
        WHERE tb.IDBanDoc = ?
-       ORDER BY tb.NgayThongBao DESC`,
-      [readerId]
-    );
+       ORDER BY tb.NgayThongBao DESC
+    `;
+
+    const [rows] = await pool.query<RowDataPacket[]>(query, [readerId]);
+
+    console.log('Raw notification rows from DB:', rows);
 
     return rows.map(row => ({
       id: row.id,
@@ -613,14 +659,46 @@ export const getNotificationsByUserId = async (userId: string): Promise<Notifica
 
 export const markNotificationAsRead = async (notificationId: number): Promise<Notification | null> => {
   try {
-    // Since we don't have an isRead field in thongbao, we'll just return the notification
-    const [rows] = await pool.query<RowDataPacket[]>(
-      `SELECT tb.IDthongbao as id, tb.IDBanDoc as userId, tb.NoiDung as message,
-              'general' as type, tb.NgayThongBao as timestamp
-       FROM thongbao tb
-       WHERE tb.IDthongbao = ?`,
-      [notificationId]
+    // First check if DaDoc column exists
+    const [columns] = await pool.query<RowDataPacket[]>(
+      `SELECT COLUMN_NAME
+       FROM INFORMATION_SCHEMA.COLUMNS
+       WHERE TABLE_SCHEMA = DATABASE()
+       AND TABLE_NAME = 'thongbao'
+       AND COLUMN_NAME = 'DaDoc'`
     );
+
+    // @ts-ignore
+    const hasDaDocColumn = columns.length > 0;
+    console.log('Has DaDoc column in markNotificationAsRead:', hasDaDocColumn);
+
+    // Update the DaDoc field to TRUE if it exists
+    if (hasDaDocColumn) {
+      await pool.query(
+        `UPDATE thongbao SET DaDoc = TRUE WHERE IDthongbao = ?`,
+        [notificationId]
+      );
+    }
+
+    // Get the updated notification
+    let query = `
+      SELECT tb.IDthongbao as id, tb.IDBanDoc as userId, tb.NoiDung as message,
+             'general' as type, tb.NgayThongBao as timestamp
+    `;
+
+    // Add DaDoc field if it exists, otherwise default to TRUE (since we're marking it as read)
+    if (hasDaDocColumn) {
+      query += `, tb.DaDoc as isRead`;
+    } else {
+      query += `, TRUE as isRead`;
+    }
+
+    query += `
+       FROM thongbao tb
+       WHERE tb.IDthongbao = ?
+    `;
+
+    const [rows] = await pool.query<RowDataPacket[]>(query, [notificationId]);
 
     if (rows.length === 0) {
       return null;
@@ -633,7 +711,7 @@ export const markNotificationAsRead = async (notificationId: number): Promise<No
       message: notification.message,
       type: notification.type,
       timestamp: new Date(notification.timestamp),
-      isRead: true // We're marking it as read in the response
+      isRead: Boolean(notification.isRead)
     };
   } catch (error) {
     console.error('Error marking notification as read:', error);
@@ -643,7 +721,40 @@ export const markNotificationAsRead = async (notificationId: number): Promise<No
 
 export const markAllNotificationsAsReadByUserId = async (userId: string): Promise<Notification[]> => {
   try {
-    // Since we don't have an isRead field in thongbao, we'll just return all notifications as read
+    // Get the reader ID from the email
+    const [readerRows] = await pool.query<RowDataPacket[]>(
+      'SELECT ID FROM bandoc WHERE ID = ?',
+      [userId]
+    );
+
+    if (readerRows.length === 0) {
+      return []; // No reader found
+    }
+
+    const readerId = readerRows[0].ID;
+
+    // First check if DaDoc column exists
+    const [columns] = await pool.query<RowDataPacket[]>(
+      `SELECT COLUMN_NAME
+       FROM INFORMATION_SCHEMA.COLUMNS
+       WHERE TABLE_SCHEMA = DATABASE()
+       AND TABLE_NAME = 'thongbao'
+       AND COLUMN_NAME = 'DaDoc'`
+    );
+
+    // @ts-ignore
+    const hasDaDocColumn = columns.length > 0;
+    console.log('Has DaDoc column in markAllNotificationsAsReadByUserId:', hasDaDocColumn);
+
+    // Update all notifications for this user to read if the column exists
+    if (hasDaDocColumn) {
+      await pool.query(
+        `UPDATE thongbao SET DaDoc = TRUE WHERE IDBanDoc = ?`,
+        [readerId]
+      );
+    }
+
+    // Return the updated notifications
     return await getNotificationsByUserId(userId);
   } catch (error) {
     console.error('Error marking all notifications as read:', error);

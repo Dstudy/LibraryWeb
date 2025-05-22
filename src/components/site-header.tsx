@@ -37,6 +37,9 @@ export function SiteHeader() {
 
   const fetchNotifications = useCallback(async () => {
     if (!isAuthenticated || !currentUser) {
+      console.log(
+        "Not authenticated or no current user, skipping notification fetch"
+      );
       setNotifications([]);
       return;
     }
@@ -49,10 +52,18 @@ export function SiteHeader() {
       if (response.ok) {
         const data: Notification[] = await response.json();
         console.log("Fetched notifications:", data);
+        console.log("Notification count:", data.length);
+
         // Ensure timestamp is a Date object for formatDistanceToNow
-        setNotifications(
-          data.map((n) => ({ ...n, timestamp: new Date(n.timestamp) }))
-        );
+        const processedNotifications = data.map((n) => ({
+          ...n,
+          timestamp: new Date(n.timestamp),
+          // Ensure isRead is a boolean
+          isRead: Boolean(n.isRead),
+        }));
+
+        console.log("Processed notifications:", processedNotifications);
+        setNotifications(processedNotifications);
       } else {
         setNotifications([]);
         console.error("Failed to fetch notifications", await response.text());
@@ -102,9 +113,21 @@ export function SiteHeader() {
     }
   };
 
-  const unreadNotificationsCount = notifications.filter(
-    (n) => !n.isRead
-  ).length;
+  const unreadNotifications = notifications.filter((n) => !n.isRead);
+  const unreadNotificationsCount = unreadNotifications.length;
+
+  // Debug notification state
+  useEffect(() => {
+    console.log("Current notifications state:", notifications);
+    console.log("Unread notifications:", unreadNotifications);
+    console.log("Unread count:", unreadNotificationsCount);
+    console.log("Show only unread:", showOnlyUnread);
+  }, [
+    notifications,
+    unreadNotifications,
+    unreadNotificationsCount,
+    showOnlyUnread,
+  ]);
 
   if (pathname === "/login") {
     return null;

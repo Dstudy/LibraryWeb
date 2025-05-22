@@ -196,8 +196,8 @@ async function seedVietnameseDatabase() {
         console.log('Creating a sample notification...');
 
         await connection.query(
-          'INSERT INTO thongbao (IDBanDoc, IDLuotMuon, NoiDung, NgayThongBao) VALUES (?, ?, ?, ?)',
-          ['BD003', 1, 'Chào mừng bạn đến với thư viện!', new Date()]
+          'INSERT INTO thongbao (IDBanDoc, IDLuotMuon, NoiDung, NgayThongBao, DaDoc) VALUES (?, ?, ?, ?, ?)',
+          ['BD003', 1, 'Chào mừng bạn đến với thư viện!', new Date(), false]
         );
 
         console.log('Sample notification created successfully');

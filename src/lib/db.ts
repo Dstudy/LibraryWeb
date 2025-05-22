@@ -120,9 +120,10 @@ export async function initDatabase() {
       CREATE TABLE IF NOT EXISTS thongbao (
         IDthongbao INT PRIMARY KEY AUTO_INCREMENT,
         IDBanDoc VARCHAR(25),
-        IDLuotMuon INT,
+        IDLuotMuon INT NULL,
         NoiDung TEXT,
         NgayThongBao DATETIME NOT NULL,
+        DaDoc BOOLEAN DEFAULT FALSE,
         FOREIGN KEY (IDBanDoc) REFERENCES bandoc(ID),
         FOREIGN KEY (IDLuotMuon) REFERENCES luotmuon(ID)
       )
