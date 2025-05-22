@@ -188,12 +188,86 @@ export default function LendingPage() {
         <CardHeader>
           <div className="flex flex-col space-y-4">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-              <CardTitle className="text-2xl flex items-center">
+              {/* <CardTitle className="text-2xl flex items-center">
                 <ArrowRightLeft className="mr-3 h-7 w-7 text-accent" />
                 {currentUser?.role === "librarian"
                   ? "Hoạt động mượn trả"
                   : "Lịch sử mượn sách của tôi"}
-              </CardTitle>
+              </CardTitle> */}
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full">
+                <div className="relative w-full sm:w-64">
+                  <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                  <Input
+                    type="search"
+                    placeholder="Tìm kiếm theo tên bạn đọc, mã số hoặc tên sách..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-10 w-full"
+                    aria-label="Tìm kiếm lịch sử mượn trả"
+                  />
+                </div>
+
+                <Tabs
+                  defaultValue="all"
+                  value={statusFilter}
+                  onValueChange={setStatusFilter}
+                  className="w-full sm:w-auto"
+                >
+                  <TabsList className="grid grid-cols-4 w-full">
+                    <TabsTrigger value="all">
+                      Tất cả
+                      {lendingRecords.length > 0 && (
+                        <span className="ml-1 text-xs bg-primary/20 rounded-full px-2 py-0.5">
+                          {lendingRecords.length}
+                        </span>
+                      )}
+                    </TabsTrigger>
+                    <TabsTrigger value="borrowed">
+                      Đang mượn
+                      {(() => {
+                        // Count active records using the same function as the filter
+                        const activeCount =
+                          lendingRecords.filter(isRecordActive).length;
+
+                        return activeCount > 0 ? (
+                          <span className="ml-1 text-xs bg-primary/20 rounded-full px-2 py-0.5">
+                            {activeCount}
+                          </span>
+                        ) : null;
+                      })()}
+                    </TabsTrigger>
+                    <TabsTrigger value="overdue">
+                      Quá hạn
+                      {(() => {
+                        // Count overdue records using the same function as the filter
+                        const overdueCount =
+                          lendingRecords.filter(isRecordOverdue).length;
+
+                        return overdueCount > 0 ? (
+                          <span className="ml-1 text-xs bg-destructive/20 rounded-full px-2 py-0.5 text-destructive">
+                            {overdueCount}
+                          </span>
+                        ) : null;
+                      })()}
+                    </TabsTrigger>
+                    <TabsTrigger value="returned">
+                      Đã trả
+                      {(() => {
+                        // Count returned records using the same function as the filter
+                        const returnedCount =
+                          lendingRecords.filter(isRecordReturned).length;
+
+                        return returnedCount > 0 ? (
+                          <span className="ml-1 text-xs bg-primary/20 rounded-full px-2 py-0.5">
+                            {returnedCount}
+                          </span>
+                        ) : null;
+                      })()}
+                    </TabsTrigger>
+                  </TabsList>
+                </Tabs>
+              </div>
+
               {currentUser?.role === "librarian" && (
                 <Button
                   onClick={() => setIsBorrowDialogOpen(true)}
@@ -202,80 +276,6 @@ export default function LendingPage() {
                   <PlusCircle className="mr-2 h-5 w-5" /> Mượn sách
                 </Button>
               )}
-            </div>
-
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full">
-              <div className="relative w-full sm:w-64">
-                <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                <Input
-                  type="search"
-                  placeholder="Tìm kiếm theo tên bạn đọc, mã số hoặc tên sách..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 w-full"
-                  aria-label="Tìm kiếm lịch sử mượn trả"
-                />
-              </div>
-
-              <Tabs
-                defaultValue="all"
-                value={statusFilter}
-                onValueChange={setStatusFilter}
-                className="w-full sm:w-auto"
-              >
-                <TabsList className="grid grid-cols-4 w-full">
-                  <TabsTrigger value="all">
-                    Tất cả
-                    {lendingRecords.length > 0 && (
-                      <span className="ml-1 text-xs bg-primary/20 rounded-full px-2 py-0.5">
-                        {lendingRecords.length}
-                      </span>
-                    )}
-                  </TabsTrigger>
-                  <TabsTrigger value="borrowed">
-                    Đang mượn
-                    {(() => {
-                      // Count active records using the same function as the filter
-                      const activeCount =
-                        lendingRecords.filter(isRecordActive).length;
-
-                      return activeCount > 0 ? (
-                        <span className="ml-1 text-xs bg-primary/20 rounded-full px-2 py-0.5">
-                          {activeCount}
-                        </span>
-                      ) : null;
-                    })()}
-                  </TabsTrigger>
-                  <TabsTrigger value="overdue">
-                    Quá hạn
-                    {(() => {
-                      // Count overdue records using the same function as the filter
-                      const overdueCount =
-                        lendingRecords.filter(isRecordOverdue).length;
-
-                      return overdueCount > 0 ? (
-                        <span className="ml-1 text-xs bg-destructive/20 rounded-full px-2 py-0.5 text-destructive">
-                          {overdueCount}
-                        </span>
-                      ) : null;
-                    })()}
-                  </TabsTrigger>
-                  <TabsTrigger value="returned">
-                    Đã trả
-                    {(() => {
-                      // Count returned records using the same function as the filter
-                      const returnedCount =
-                        lendingRecords.filter(isRecordReturned).length;
-
-                      return returnedCount > 0 ? (
-                        <span className="ml-1 text-xs bg-primary/20 rounded-full px-2 py-0.5">
-                          {returnedCount}
-                        </span>
-                      ) : null;
-                    })()}
-                  </TabsTrigger>
-                </TabsList>
-              </Tabs>
             </div>
           </div>
         </CardHeader>

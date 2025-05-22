@@ -410,10 +410,17 @@ export default function BiblioManagerPage() {
       <Card className="shadow-xl">
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle className="text-2xl flex items-center">
-              <Library className="mr-3 h-7 w-7 text-primary" />
-              Sách
-            </CardTitle>
+            <div className="relative w-full md:max-w-sm pt-4">
+              <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground pt-1" />
+              <Input
+                type="search"
+                placeholder="Tìm kiếm theo tên, tác giả, NXB..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 w-full"
+                aria-label="Search books"
+              />
+            </div>
             {currentUser?.role === "librarian" && (
               <Button
                 onClick={handleAddBook}
@@ -422,17 +429,6 @@ export default function BiblioManagerPage() {
                 <PlusCircle className="mr-2 h-5 w-5" /> Thêm sách mới
               </Button>
             )}
-          </div>
-          <div className="relative w-full md:max-w-sm pt-4">
-            <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground pt-1" />
-            <Input
-              type="search"
-              placeholder="Tìm kiếm theo tên, tác giả, NXB..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 w-full"
-              aria-label="Search books"
-            />
           </div>
         </CardHeader>
         <CardContent>
