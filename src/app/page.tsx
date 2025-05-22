@@ -370,15 +370,17 @@ export default function BiblioManagerPage() {
   return (
     <div className="space-y-8">
       <header className="text-center">
-        <h1 className="text-3xl sm:text-4xl font-bold text-primary">
-          BiblioManager Dashboard
-        </h1>
-        <p className="text-muted-foreground">
-          Your personal book management system.{" "}
-          <span className="font-semibold capitalize">
-            ({currentUser?.role})
-          </span>
-        </p>
+        {currentUser?.role === "reader" && (
+          <h1 className="text-3xl sm:text-4xl font-bold text-primary">
+            Tra cứu sách
+          </h1>
+        )}
+        {currentUser?.role === "librarian" && (
+          <h1 className="text-3xl sm:text-4xl font-bold text-primary">
+            Quản lý sách
+          </h1>
+        )}
+
         {currentUser?.role === "reader" && (
           <div className="mt-2 flex justify-center">
             <Button

@@ -26,11 +26,11 @@
     --primary: 219 96% 29%; /* #033b93 Deep Blue */
     --primary-foreground: 0 0% 100%; /* White */
 
-    --secondary: 233 70% 90%; /* Lighter shade for secondary elements */
-    --secondary-foreground: 231 48% 30%; /* Darker shade of primary for text on secondary */
+    --secondary: 219 70% 90%; /* Lighter shade of #033b93 for secondary elements */
+    --secondary-foreground: 219 96% 20%; /* Darker shade of primary for text on secondary */
 
-    --muted: 233 50% 85%; /* Muted color */
-    --muted-foreground: 230 20% 45%; /* Text for muted backgrounds */
+    --muted: 219 50% 85%; /* Muted color */
+    --muted-foreground: 219 20% 45%; /* Text for muted backgrounds */
 
     --accent: 258 44% 58%; /* #7E57C2 Light Purple */
     --accent-foreground: 0 0% 100%; /* White */

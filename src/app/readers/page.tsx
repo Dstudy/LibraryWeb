@@ -48,7 +48,7 @@ export default function ReadersPage() {
     try {
       setIsDataLoading(true);
       const response = await fetch("/api/readers");
-      
+
       if (response.ok) {
         const data = await response.json();
         setReaders(data);
@@ -168,7 +168,8 @@ export default function ReadersPage() {
       toast({
         variant: "destructive",
         title: "Error",
-        description: error.message || "Failed to save reader. Please try again.",
+        description:
+          error.message || "Failed to save reader. Please try again.",
       });
     }
   };
@@ -198,7 +199,8 @@ export default function ReadersPage() {
       toast({
         variant: "destructive",
         title: "Error",
-        description: error.message || "Failed to delete reader. Please try again.",
+        description:
+          error.message || "Failed to delete reader. Please try again.",
       });
     } finally {
       setIsDeleteDialogOpen(false);
@@ -209,14 +211,8 @@ export default function ReadersPage() {
     <div className="space-y-8">
       <header className="text-center">
         <h1 className="text-3xl sm:text-4xl font-bold text-primary">
-          Reader Management
+          Quản lý bạn đọc
         </h1>
-        <p className="text-muted-foreground">
-          Manage library readers and their information.{" "}
-          <span className="font-semibold capitalize">
-            ({currentUser?.role})
-          </span>
-        </p>
       </header>
 
       <Card className="shadow-xl">

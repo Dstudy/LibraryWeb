@@ -179,14 +179,9 @@ export default function LendingPage() {
       <header className="text-center mb-8">
         <h1 className="text-3xl sm:text-4xl font-bold text-primary">
           {currentUser?.role === "librarian"
-            ? "Lending Management"
-            : "My Borrowing History"}
+            ? "Quản lý mượn trả"
+            : "Lịch sử mượn sách"}
         </h1>
-        <p className="text-muted-foreground">
-          {currentUser?.role === "librarian"
-            ? "Manage book lending activities"
-            : "View your current and past borrowings"}
-        </p>
       </header>
 
       <Card className="shadow-xl w-full">

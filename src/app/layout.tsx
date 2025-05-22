@@ -16,8 +16,8 @@ const nunito = Nunito({
 });
 
 export const metadata: Metadata = {
-  title: "BiblioManager",
-  description: "Manage your book collection easily.",
+  title: "Quản lý thư viện",
+  description: "Quản lý sách và mượn trả.",
 };
 
 export default function RootLayout({
