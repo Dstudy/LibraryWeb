@@ -207,7 +207,10 @@ export function SiteHeader() {
                               <XCircle className="h-4 w-4 mt-0.5 text-destructive shrink-0" />
                             )}
                             {notification.type === "new_borrow" && (
-                              <CheckCircle2 className="h-4 w-4 mt-0.5 text-green-600 shrink-0" />
+                              <CheckCircle2
+                                className="h-4 w-4 mt-0.5 shrink-0"
+                                style={{ color: "#033b93" }}
+                              />
                             )}
                             <div className="flex-1">
                               <p className="text-sm leading-tight whitespace-normal">

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { markNotificationAsRead, markAllNotificationsAsReadByUserId } from '@/app/api/lib/data-mysql';
+import { markNotificationAsRead, markAllNotificationsAsReadByUserId } from '@/app/api/lib/data-vietnamese';
 
 // PUT /api/notifications/mark-read
 export async function PUT(request: Request) {

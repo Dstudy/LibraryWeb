@@ -14,6 +14,9 @@ module.exports = {
         "2xl": "100%",
       },
     },
+    fontFamily: {
+      nunito: ["var(--font-nunito)"],
+    },
     extend: {
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",

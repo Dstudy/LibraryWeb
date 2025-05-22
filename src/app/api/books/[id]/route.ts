@@ -12,10 +12,7 @@ interface Params {
 
 export async function GET(request: Request, { params }: Params) {
   try {
-    const id = parseInt(params.id, 10);
-    if (isNaN(id)) {
-      return NextResponse.json({ message: 'Invalid book ID format' }, { status: 400 });
-    }
+    const id = params.id;
     const book = await getBookById(id);
     if (!book) {
       return NextResponse.json({ message: 'Book not found' }, { status: 404 });
@@ -34,11 +31,7 @@ export async function GET(request: Request, { params }: Params) {
 
 export async function PUT(request: Request, { params }: Params) {
   try {
-    const id = parseInt(params.id, 10);
-    if (isNaN(id)) {
-      return NextResponse.json({ message: 'Invalid book ID format' }, { status: 400 });
-    }
-
+    const id = params.id;
     const body = await request.json();
 
     // Validate incoming data, explicitly convert importDate if it's a string
@@ -53,7 +46,7 @@ export async function PUT(request: Request, { params }: Params) {
       return NextResponse.json({ message: 'Invalid book data', errors: validation.error.flatten().fieldErrors }, { status: 400 });
     }
 
-    // updateBook in data-mysql.ts now handles ensuring importDate is a Date object.
+    // updateBook in data-vietnamese.ts now handles ensuring importDate is a Date object.
     // We pass the validated data.
     const updatedBook = await updateBook(id, validation.data as Omit<Book, 'id'>);
 
@@ -79,11 +72,7 @@ export async function PUT(request: Request, { params }: Params) {
 
 export async function DELETE(request: Request, { params }: Params) {
   try {
-    const id = parseInt(params.id, 10);
-    if (isNaN(id)) {
-      return NextResponse.json({ message: 'Invalid book ID format' }, { status: 400 });
-    }
-
+    const id = params.id;
     const success = await deleteBook(id);
     if (!success) {
       return NextResponse.json({ message: 'Book not found or could not be deleted' }, { status: 404 });

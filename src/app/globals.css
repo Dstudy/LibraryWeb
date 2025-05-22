@@ -2,13 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  font-family: Arial, Helvetica, sans-serif;
+@layer base {
+  :root {
+    --font-nunito: "Nunito", sans-serif;
+  }
+}
+
+.font-nunito {
+  font-family: var(--font-nunito);
 }
 
 @layer base {
   :root {
-    --background: 233 100% 97%; /* #F0F2FF */
+    --background: 219 30% 97%; /* Very light blue tint */
     --foreground: 230 25% 25%; /* Dark Gray/Blue for text */
 
     --card: 0 0% 100%; /* White */
@@ -17,7 +23,7 @@ body {
     --popover: 0 0% 100%; /* White */
     --popover-foreground: 230 25% 25%; /* Dark Gray/Blue */
 
-    --primary: 231 48% 48%; /* #3F51B5 Deep Blue */
+    --primary: 219 96% 29%; /* #033b93 Deep Blue */
     --primary-foreground: 0 0% 100%; /* White */
 
     --secondary: 233 70% 90%; /* Lighter shade for secondary elements */
@@ -32,8 +38,8 @@ body {
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 233 30% 80%; /* Subtle border */
-    --input: 233 30% 80%; /* Input border */
+    --border: 219 30% 80%; /* Subtle border */
+    --input: 219 30% 80%; /* Input border */
     --ring: 258 44% 58%; /* Accent color for focus rings */
 
     --radius: 0.5rem;
@@ -46,13 +52,13 @@ body {
     --chart-5: 27 87% 67%;
 
     /* Sidebar specific colors (adjust if sidebar is ever used with this theme) */
-    --sidebar-background: 233 90% 95%; /* Lighter than main bg or a contrasting light color */
+    --sidebar-background: 219 20% 95%; /* Light blue tint matching the main theme */
     --sidebar-foreground: 230 25% 25%;
-    --sidebar-primary: 231 48% 48%;
+    --sidebar-primary: 219 96% 29%; /* #033b93 */
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 258 44% 58%;
     --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 233 30% 75%;
+    --sidebar-border: 219 30% 75%;
     --sidebar-ring: 258 44% 58%;
   }
 
@@ -84,7 +90,7 @@ body {
     --chart-5: 340 75% 55%;
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary: 219 96% 29%; /* #033b93 */
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 240 3.7% 15.9%;
     --sidebar-accent-foreground: 240 4.8% 95.9%;

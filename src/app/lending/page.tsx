@@ -12,7 +12,6 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/auth";
 import { useRouter } from "next/navigation";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { isPast } from "date-fns";
 
 export default function LendingPage() {
   const [lendingRecords, setLendingRecords] = useState<LendingRecord[]>([]);
@@ -71,6 +70,51 @@ export default function LendingPage() {
     }
   }, [toast, isAuthenticated, currentUser]);
 
+  // Helper functions for record status determination
+  const isRecordOverdue = useCallback((record: LendingRecord) => {
+    // If the record has been returned, it's not overdue
+    if (record.returnDate) return false;
+
+    try {
+      // Parse the due date
+      const dueDate = new Date(record.dueDate);
+
+      // Check if the date is valid
+      if (isNaN(dueDate.getTime())) return false;
+
+      // Compare with current date
+      const now = new Date();
+      return dueDate < now;
+    } catch (error) {
+      console.error("Error checking if record is overdue:", error);
+      return false;
+    }
+  }, []);
+
+  const isRecordActive = useCallback((record: LendingRecord) => {
+    // If the record has been returned, it's not active
+    if (record.returnDate) return false;
+
+    try {
+      // Parse the due date
+      const dueDate = new Date(record.dueDate);
+
+      // Check if the date is valid
+      if (isNaN(dueDate.getTime())) return false;
+
+      // Compare with current date - if due date is in the future, it's active
+      const now = new Date();
+      return dueDate >= now;
+    } catch (error) {
+      console.error("Error checking if record is active:", error);
+      return false;
+    }
+  }, []);
+
+  const isRecordReturned = useCallback((record: LendingRecord) => {
+    return !!record.returnDate;
+  }, []);
+
   // Filter records based on search term and status filter
   const filteredRecords = useMemo(() => {
     return lendingRecords.filter((record) => {
@@ -87,16 +131,26 @@ export default function LendingPage() {
       // Apply status filter
       let matchesStatus = true;
       if (statusFilter === "borrowed") {
-        matchesStatus = !record.returnDate && !isPast(new Date(record.dueDate));
+        // For "borrowed" status, we want books that are borrowed but not overdue
+        matchesStatus = isRecordActive(record);
       } else if (statusFilter === "overdue") {
-        matchesStatus = !record.returnDate && isPast(new Date(record.dueDate));
+        // For "overdue" status, it must be overdue
+        matchesStatus = isRecordOverdue(record);
       } else if (statusFilter === "returned") {
-        matchesStatus = !!record.returnDate;
+        // For "returned" status, it must have a return date
+        matchesStatus = isRecordReturned(record);
       }
 
       return matchesSearch && matchesStatus;
     });
-  }, [lendingRecords, searchTerm, statusFilter]);
+  }, [
+    lendingRecords,
+    searchTerm,
+    statusFilter,
+    isRecordActive,
+    isRecordOverdue,
+    isRecordReturned,
+  ]);
 
   useEffect(() => {
     if (authIsLoading) return;
@@ -160,7 +214,7 @@ export default function LendingPage() {
                 <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                 <Input
                   type="search"
-                  placeholder="Search by reader or book ID..."
+                  placeholder="Search by reader name, ID or book name..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-10 w-full"
@@ -184,41 +238,46 @@ export default function LendingPage() {
                     )}
                   </TabsTrigger>
                   <TabsTrigger value="borrowed">
-                    Borrowed
-                    {lendingRecords.filter(
-                      (r) => !r.returnDate && !isPast(new Date(r.dueDate))
-                    ).length > 0 && (
-                      <span className="ml-1 text-xs bg-primary/20 rounded-full px-2 py-0.5">
-                        {
-                          lendingRecords.filter(
-                            (r) => !r.returnDate && !isPast(new Date(r.dueDate))
-                          ).length
-                        }
-                      </span>
-                    )}
+                    Active
+                    {(() => {
+                      // Count active records using the same function as the filter
+                      const activeCount =
+                        lendingRecords.filter(isRecordActive).length;
+
+                      return activeCount > 0 ? (
+                        <span className="ml-1 text-xs bg-primary/20 rounded-full px-2 py-0.5">
+                          {activeCount}
+                        </span>
+                      ) : null;
+                    })()}
                   </TabsTrigger>
                   <TabsTrigger value="overdue">
                     Overdue
-                    {lendingRecords.filter(
-                      (r) => !r.returnDate && isPast(new Date(r.dueDate))
-                    ).length > 0 && (
-                      <span className="ml-1 text-xs bg-destructive/20 rounded-full px-2 py-0.5 text-destructive">
-                        {
-                          lendingRecords.filter(
-                            (r) => !r.returnDate && isPast(new Date(r.dueDate))
-                          ).length
-                        }
-                      </span>
-                    )}
+                    {(() => {
+                      // Count overdue records using the same function as the filter
+                      const overdueCount =
+                        lendingRecords.filter(isRecordOverdue).length;
+
+                      return overdueCount > 0 ? (
+                        <span className="ml-1 text-xs bg-destructive/20 rounded-full px-2 py-0.5 text-destructive">
+                          {overdueCount}
+                        </span>
+                      ) : null;
+                    })()}
                   </TabsTrigger>
                   <TabsTrigger value="returned">
                     Returned
-                    {lendingRecords.filter((r) => !!r.returnDate).length >
-                      0 && (
-                      <span className="ml-1 text-xs bg-primary/20 rounded-full px-2 py-0.5">
-                        {lendingRecords.filter((r) => !!r.returnDate).length}
-                      </span>
-                    )}
+                    {(() => {
+                      // Count returned records using the same function as the filter
+                      const returnedCount =
+                        lendingRecords.filter(isRecordReturned).length;
+
+                      return returnedCount > 0 ? (
+                        <span className="ml-1 text-xs bg-primary/20 rounded-full px-2 py-0.5">
+                          {returnedCount}
+                        </span>
+                      ) : null;
+                    })()}
                   </TabsTrigger>
                 </TabsList>
               </Tabs>
@@ -254,6 +313,7 @@ export default function LendingPage() {
                 </span>
               </div>
               <LendingActivityTable
+                key={`lending-table-${statusFilter}`}
                 records={filteredRecords}
                 onRecordUpdate={fetchData}
                 userRole={currentUser?.role}

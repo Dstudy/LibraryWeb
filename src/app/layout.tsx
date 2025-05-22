@@ -6,6 +6,14 @@ import { SiteHeader } from "@/components/site-header"; // Import SiteHeader
 import { NotificationProvider } from "@/contexts/notification"; // Import NotificationProvider
 import { MainSidebar } from "@/components/main-sidebar"; // Import MainSidebar
 import { SidebarInset } from "@/components/ui/sidebar"; // Import SidebarInset
+import { Nunito } from "next/font/google"; // Import Nunito font
+
+// Initialize Nunito font with Latin subset
+const nunito = Nunito({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-nunito",
+});
 
 export const metadata: Metadata = {
   title: "BiblioManager",
@@ -18,8 +26,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className="antialiased min-h-screen bg-background font-sans">
+    <html lang="en" suppressHydrationWarning className={nunito.variable}>
+      <body className="antialiased min-h-screen bg-background font-nunito">
         <AuthProvider>
           <NotificationProvider>
             <div className="relative flex min-h-screen">

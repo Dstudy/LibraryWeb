@@ -66,18 +66,55 @@ export function LendingActivityTable({
     }
   };
 
+  // Helper functions for determining record status
+  const isRecordReturned = (record: LendingRecord): boolean => {
+    return !!record.returnDate;
+  };
+
+  const isRecordOverdue = (record: LendingRecord): boolean => {
+    // If the record has been returned, it's not overdue
+    if (isRecordReturned(record)) return false;
+
+    try {
+      // Parse the due date
+      const dueDate = new Date(record.dueDate);
+
+      // Check if the date is valid
+      if (isNaN(dueDate.getTime())) return false;
+
+      // Compare with current date
+      const now = new Date();
+      return dueDate < now;
+    } catch (error) {
+      console.error("Error checking if record is overdue:", error);
+      return false;
+    }
+  };
+
+  const isRecordActive = (record: LendingRecord): boolean => {
+    // If the record has been returned, it's not active
+    if (isRecordReturned(record)) return false;
+
+    // If it's not overdue, it's active
+    return !isRecordOverdue(record);
+  };
+
   const getStatusBadge = (record: LendingRecord) => {
-    if (record.returnDate) {
+    if (isRecordReturned(record)) {
       return <Badge variant="secondary">Returned</Badge>;
-    }
-    if (isPast(new Date(record.dueDate))) {
+    } else if (isRecordOverdue(record)) {
       return <Badge variant="destructive">Overdue</Badge>;
+    } else {
+      return (
+        <Badge
+          variant="default"
+          style={{ backgroundColor: "#033b93" }}
+          className="hover:bg-primary/90"
+        >
+          Active
+        </Badge>
+      );
     }
-    return (
-      <Badge variant="default" className="bg-green-600 hover:bg-green-700">
-        Borrowed
-      </Badge>
-    );
   };
 
   return (

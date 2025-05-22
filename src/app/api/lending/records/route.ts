@@ -19,13 +19,28 @@ export async function GET(request: Request) {
     // The MySQL version of getLendingRecords handles reader ID filtering
     const records = await getLendingRecords(readerId || undefined);
 
+    // Log records for debugging
+    console.log("Records from database:", records);
+
     // Convert Date objects to ISO strings for JSON serialization
-    const recordsForApi = records.map(record => ({
-      ...record,
-      borrowDate: record.borrowDate.toISOString(),
-      dueDate: record.dueDate.toISOString(),
-      returnDate: record.returnDate ? record.returnDate.toISOString() : null,
-    }));
+    const recordsForApi = records.map(record => {
+      // Log each record's dates for debugging
+      console.log(`Record ${record.id} dates:`, {
+        borrowDate: record.borrowDate,
+        borrowDateType: typeof record.borrowDate,
+        dueDate: record.dueDate,
+        dueDateType: typeof record.dueDate,
+        returnDate: record.returnDate,
+        returnDateType: typeof record.returnDate
+      });
+
+      return {
+        ...record,
+        borrowDate: record.borrowDate.toISOString(),
+        dueDate: record.dueDate.toISOString(),
+        returnDate: record.returnDate ? record.returnDate.toISOString() : null,
+      };
+    });
 
     return NextResponse.json(recordsForApi, { status: 200 });
   } catch (error) {
