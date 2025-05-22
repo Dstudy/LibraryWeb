@@ -31,10 +31,8 @@ export function MainSidebar() {
         <SidebarHeader>
           <div className="flex items-center justify-between p-2">
             <Link href="/" className="flex items-center space-x-2">
-              <BookMarked className="h-7 w-7 text-primary" />
-              <span className="font-bold text-xl text-primary">
-                BiblioManager
-              </span>
+              <BookMarked className="h-7 w-7 text-white" />
+              <span className="font-bold text-xl text-white">Thư viện</span>
             </Link>
             <SidebarTrigger />
           </div>
@@ -49,7 +47,7 @@ export function MainSidebar() {
                 tooltip="Books"
               >
                 <Link href="/">
-                  <Library className="h-5 w-5" />
+                  <Library className="h-6 w-6 text-white" />
                   <span>Sách</span>
                 </Link>
               </SidebarMenuButton>
@@ -61,7 +59,7 @@ export function MainSidebar() {
                 tooltip="Lending"
               >
                 <Link href="/lending">
-                  <ArrowRightLeft className="h-5 w-5" />
+                  <ArrowRightLeft className="h-6 w-6 text-white" />
                   <span>Mượn trả</span>
                 </Link>
               </SidebarMenuButton>
@@ -73,7 +71,7 @@ export function MainSidebar() {
                 tooltip="Readers"
               >
                 <Link href="/readers">
-                  <Users className="h-5 w-5" />
+                  <Users className="h-6 w-6 text-white" />
                   <span>Bạn đọc</span>
                 </Link>
               </SidebarMenuButton>

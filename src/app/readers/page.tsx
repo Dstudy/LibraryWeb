@@ -218,16 +218,12 @@ export default function ReadersPage() {
       <Card className="shadow-xl">
         <CardHeader>
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-            {/* <CardTitle className="text-2xl flex items-center">
-              <UserRound className="mr-3 h-7 w-7 text-accent" />
-              Bạn đọc
-            </CardTitle> */}
             <div className="mt-4">
               <div className="relative w-full sm:w-64">
                 <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                 <Input
                   type="search"
-                  placeholder="Search readers..."
+                  placeholder="Tìm kiếm bạn đọc..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-10 w-full"

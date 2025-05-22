@@ -76,18 +76,10 @@ export function BookTable({
     ...columnHeadersBase,
     {
       key: "quantity",
-      label: "Tổng SL",
+      label: "Số lượng",
       className: "text-right whitespace-nowrap min-w-[5rem]",
     },
-    {
-      key: "borrowedCount",
-      label: "SL đã mượn",
-      className: "text-right whitespace-nowrap min-w-[5rem]",
-    },
-    // Available quantity is derived, not directly sortable from a single field in this setup.
-    // Sorting by it would require client-side calculation before sort or backend support.
-    // For now, we'll display it without making it a primary sort key through `requestSort`.
-    // { key: 'availableQuantity', label: 'Available', className: "text-right whitespace-nowrap min-w-[5rem]" },
+    // Removed borrowedCount column
   ];
 
   return (
@@ -110,9 +102,7 @@ export function BookTable({
                 </div>
               </TableHead>
             ))}
-            <TableHead className="text-right whitespace-nowrap min-w-[5rem]">
-              SL còn
-            </TableHead>
+            {/* Removed availableQuantity column header */}
             {userRole === "librarian" && (
               <TableHead className="text-right min-w-[7.5rem] whitespace-nowrap"></TableHead>
             )}
@@ -124,8 +114,8 @@ export function BookTable({
               <TableCell
                 colSpan={
                   userRole === "librarian"
-                    ? columnHeaders.length + 2
-                    : columnHeaders.length + 1
+                    ? columnHeaders.length + 1
+                    : columnHeaders.length
                 }
                 className="h-24 text-center text-muted-foreground"
               >
@@ -134,8 +124,6 @@ export function BookTable({
             </TableRow>
           ) : (
             books.map((book) => {
-              const availableQuantity =
-                (book.quantity || 0) - (book.borrowedCount || 0);
               return (
                 <TableRow
                   key={book.id}
@@ -157,12 +145,8 @@ export function BookTable({
                   <TableCell className="text-right whitespace-nowrap">
                     {book.quantity}
                   </TableCell>
-                  <TableCell className="text-right whitespace-nowrap">
-                    {book.borrowedCount || 0}
-                  </TableCell>
-                  <TableCell className="text-right whitespace-nowrap font-semibold">
-                    {availableQuantity}
-                  </TableCell>
+                  {/* Removed borrowedCount cell */}
+                  {/* Removed availableQuantity cell */}
                   {userRole === "librarian" ? (
                     <TableCell className="text-right whitespace-nowrap space-x-1 md:space-x-2">
                       <Button
@@ -182,10 +166,7 @@ export function BookTable({
                         <Trash2 className="h-5 w-5 text-destructive" />
                       </Button>
                     </TableCell>
-                  ) : // For readers, this cell is not needed if actions column is the last one.
-                  // If 'Available' is last, then an empty cell might not be needed if colspan is handled.
-                  // Adjusted colSpan above for no books found.
-                  null}
+                  ) : null}
                 </TableRow>
               );
             })

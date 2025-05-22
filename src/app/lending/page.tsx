@@ -195,7 +195,7 @@ export default function LendingPage() {
                   : "Lịch sử mượn sách của tôi"}
               </CardTitle> */}
               <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full">
-                <div className="relative w-full sm:w-64">
+                <div className="relative w-full sm:w-80">
                   <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                   <Input
                     type="search"

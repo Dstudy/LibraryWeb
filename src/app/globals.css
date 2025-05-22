@@ -51,15 +51,15 @@
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
 
-    /* Sidebar specific colors (adjust if sidebar is ever used with this theme) */
-    --sidebar-background: 219 20% 95%; /* Light blue tint matching the main theme */
-    --sidebar-foreground: 230 25% 25%;
+    /* Sidebar specific colors */
+    --sidebar-background: 219 96% 29%; /* #033b93 */
+    --sidebar-foreground: 0 0% 100%; /* White text */
     --sidebar-primary: 219 96% 29%; /* #033b93 */
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 258 44% 58%;
-    --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 219 30% 75%;
-    --sidebar-ring: 258 44% 58%;
+    --sidebar-accent: 219 96% 35%; /* Slightly lighter blue for hover/active states */
+    --sidebar-accent-foreground: 0 0% 100%; /* White text */
+    --sidebar-border: 219 96% 40%; /* Lighter border */
+    --sidebar-ring: 219 96% 50%; /* Highlight ring */
   }
 
   .dark {
@@ -88,14 +88,14 @@
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-background: 219 96% 29%; /* #033b93 */
+    --sidebar-foreground: 0 0% 100%; /* White text */
     --sidebar-primary: 219 96% 29%; /* #033b93 */
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-accent: 219 96% 35%; /* Slightly lighter blue for hover/active states */
+    --sidebar-accent-foreground: 0 0% 100%; /* White text */
+    --sidebar-border: 219 96% 40%; /* Lighter border */
+    --sidebar-ring: 219 96% 50%; /* Highlight ring */
   }
 }
 
