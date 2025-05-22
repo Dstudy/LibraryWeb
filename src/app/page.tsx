@@ -85,7 +85,6 @@ export default function BiblioManagerPage() {
       if (!skipDuplicateCheck) {
         const exists = await checkForExistingNotification(message, type);
         if (exists) {
-          console.log("Similar notification already exists, skipping creation");
           return;
         }
       }
@@ -413,14 +412,14 @@ export default function BiblioManagerPage() {
           <div className="flex items-center justify-between">
             <CardTitle className="text-2xl flex items-center">
               <Library className="mr-3 h-7 w-7 text-primary" />
-              Book Collection
+              Sách
             </CardTitle>
             {currentUser?.role === "librarian" && (
               <Button
                 onClick={handleAddBook}
                 className="bg-accent hover:bg-accent/90 text-accent-foreground"
               >
-                <PlusCircle className="mr-2 h-5 w-5" /> Add New Book
+                <PlusCircle className="mr-2 h-5 w-5" /> Thêm sách mới
               </Button>
             )}
           </div>
@@ -428,7 +427,7 @@ export default function BiblioManagerPage() {
             <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground pt-1" />
             <Input
               type="search"
-              placeholder="Search by name, author, publisher..."
+              placeholder="Tìm kiếm theo tên, tác giả, NXB..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10 w-full"
@@ -465,13 +464,8 @@ export default function BiblioManagerPage() {
           <DialogContent className="sm:max-w-lg md:max-w-xl lg:max-w-2xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle className="text-2xl text-primary">
-                {editingBook ? "Edit Book" : "Add New Book"}
+                {editingBook ? "Sửa sách" : "Thêm sách mới"}
               </DialogTitle>
-              <DialogDescription>
-                {editingBook
-                  ? "Update the details of the book."
-                  : "Fill in the details to add a new book to your collection."}
-              </DialogDescription>
             </DialogHeader>
             <BookForm
               onSubmit={handleFormSubmit}
@@ -492,21 +486,21 @@ export default function BiblioManagerPage() {
         >
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+              <AlertDialogTitle>Bạn có chắc không?</AlertDialogTitle>
               <AlertDialogDescription>
-                This action cannot be undone. This will permanently delete the
-                book from your collection.
+                Hành động này không thể quay lại. Sách sẽ bị xóa vĩnh viễn khỏi
+                cơ sở dữ liệu.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel onClick={() => setBookToDeleteId(null)}>
-                Cancel
+                Thoát
               </AlertDialogCancel>
               <AlertDialogAction
                 onClick={confirmDeleteBook}
                 className="bg-destructive hover:bg-destructive/90"
               >
-                Delete
+                Xóa
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>

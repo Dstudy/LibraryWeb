@@ -37,10 +37,10 @@ const columnHeadersBase: {
 }[] = [
   // Include ID column
   { key: "id", label: "ID", className: "whitespace-nowrap min-w-[4rem]" },
-  { key: "name", label: "Name", className: "min-w-[12rem]" },
-  { key: "type", label: "Type", className: "min-w-[8rem]" },
-  { key: "author", label: "Author", className: "min-w-[10rem]" },
-  { key: "publisher", label: "Publisher", className: "min-w-[10rem]" },
+  { key: "name", label: "Tên", className: "min-w-[12rem]" },
+  { key: "type", label: "Thể loại", className: "min-w-[8rem]" },
+  { key: "author", label: "Tác giả", className: "min-w-[10rem]" },
+  { key: "publisher", label: "Nhà XB", className: "min-w-[10rem]" },
   {
     key: "publishYear",
     label: "Year",
@@ -48,7 +48,7 @@ const columnHeadersBase: {
   },
   {
     key: "importDate",
-    label: "Import Date",
+    label: "Ngày nhập",
     className: "whitespace-nowrap min-w-[8rem]",
   },
 ];
@@ -76,12 +76,12 @@ export function BookTable({
     ...columnHeadersBase,
     {
       key: "quantity",
-      label: "Total Qty",
+      label: "Tổng SL",
       className: "text-right whitespace-nowrap min-w-[5rem]",
     },
     {
       key: "borrowedCount",
-      label: "Borrowed",
+      label: "SL đã mượn",
       className: "text-right whitespace-nowrap min-w-[5rem]",
     },
     // Available quantity is derived, not directly sortable from a single field in this setup.
@@ -111,12 +111,10 @@ export function BookTable({
               </TableHead>
             ))}
             <TableHead className="text-right whitespace-nowrap min-w-[5rem]">
-              Available
+              SL còn
             </TableHead>
             {userRole === "librarian" && (
-              <TableHead className="text-right min-w-[7.5rem] whitespace-nowrap">
-                Actions
-              </TableHead>
+              <TableHead className="text-right min-w-[7.5rem] whitespace-nowrap"></TableHead>
             )}
           </TableRow>
         </TableHeader>

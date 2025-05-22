@@ -50,7 +50,7 @@ export function MainSidebar() {
               >
                 <Link href="/">
                   <Library className="h-5 w-5" />
-                  <span>Books</span>
+                  <span>Sách</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -62,7 +62,7 @@ export function MainSidebar() {
               >
                 <Link href="/lending">
                   <ArrowRightLeft className="h-5 w-5" />
-                  <span>Lending</span>
+                  <span>Mượn trả</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -74,20 +74,12 @@ export function MainSidebar() {
               >
                 <Link href="/readers">
                   <Users className="h-5 w-5" />
-                  <span>Readers</span>
+                  <span>Bạn đọc</span>
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarContent>
-        <SidebarFooter>
-          <SidebarSeparator />
-          <div className="px-3 py-2">
-            <p className="text-xs text-muted-foreground">
-              © {new Date().getFullYear()} BiblioManager
-            </p>
-          </div>
-        </SidebarFooter>
       </Sidebar>
     </SidebarProvider>
   );

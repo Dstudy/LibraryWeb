@@ -109,7 +109,8 @@ export async function POST(request: Request) {
 
     if (activeReaderRecords.length >= MAX_BORROW_LIMIT) {
       return NextResponse.json({
-        message: `Reader has reached the maximum borrowing limit of ${MAX_BORROW_LIMIT} books`
+        message: `Bạn đọc đã mượn tối đa ${MAX_BORROW_LIMIT} cuốn sách. Vui lòng trả sách trước khi mượn thêm.`,
+        errorCode: 'BORROW_LIMIT_REACHED'
       }, { status: 400 });
     }
 

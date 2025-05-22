@@ -44,7 +44,7 @@ export default function LoginPage() {
   if (authIsLoading || (!authIsLoading && isAuthenticated)) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-background">
-        <p className="text-muted-foreground">Loading...</p>
+        <p className="text-muted-foreground">Đang tải...</p>
       </div>
     );
   }
@@ -54,20 +54,20 @@ export default function LoginPage() {
       <Card className="w-full max-w-md shadow-2xl">
         <CardHeader className="text-center">
           <CardTitle className="text-3xl font-bold text-primary">
-            BiblioManager Login
+            Đăng nhập BiblioManager
           </CardTitle>
           <CardDescription>
-            Access your personal book management system.
+            Truy cập hệ thống quản lý thư viện của bạn.
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="username">Reader/Librarian ID</Label>
+              <Label htmlFor="username">Mã số bạn đọc/thủ thư</Label>
               <Input
                 id="username"
                 type="text"
-                placeholder="Enter your ID"
+                placeholder="Nhập mã số của bạn"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
@@ -75,7 +75,7 @@ export default function LoginPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Date of Birth (DDMMYYYY)</Label>
+              <Label htmlFor="password">Ngày sinh (DDMMYYYY)</Label>
               <div className="relative">
                 <Input
                   id="password"
@@ -87,7 +87,7 @@ export default function LoginPage() {
                   className="text-base pr-10"
                   maxLength={8}
                   pattern="[0-9]{8}"
-                  title="Please enter your date of birth in DDMMYYYY format"
+                  title="Vui lòng nhập ngày sinh theo định dạng DDMMYYYY"
                 />
                 <Button
                   type="button"
@@ -96,7 +96,7 @@ export default function LoginPage() {
                   className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7"
                   onClick={() => setShowPassword(!showPassword)}
                   aria-label={
-                    showPassword ? "Hide date of birth" : "Show date of birth"
+                    showPassword ? "Ẩn ngày sinh" : "Hiển thị ngày sinh"
                   }
                 >
                   {showPassword ? (
@@ -116,16 +116,16 @@ export default function LoginPage() {
                 <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-primary-foreground"></div>
               ) : (
                 <>
-                  <LogIn className="mr-2 h-5 w-5" /> Log In
+                  <LogIn className="mr-2 h-5 w-5" /> Đăng nhập
                 </>
               )}
             </Button>
           </form>
         </CardContent>
         <CardFooter className="flex-col text-center text-sm text-muted-foreground space-y-1">
-          <p>Login with your ID and date of birth (DDMMYYYY format)</p>
-          <p>Example: Librarian ID / 01012000</p>
-          <p>Example: Reader ID / 15051995</p>
+          <p>Đăng nhập bằng mã số và ngày sinh (định dạng DDMMYYYY)</p>
+          <p>Ví dụ: Mã số thủ thư / 01012000</p>
+          <p>Ví dụ: Mã số bạn đọc / 15051995</p>
         </CardFooter>
       </Card>
     </div>

@@ -7,6 +7,7 @@ import { NotificationProvider } from "@/contexts/notification"; // Import Notifi
 import { MainSidebar } from "@/components/main-sidebar"; // Import MainSidebar
 import { SidebarInset } from "@/components/ui/sidebar"; // Import SidebarInset
 import { Nunito } from "next/font/google"; // Import Nunito font
+import { ChunkErrorBoundary } from "@/components/chunk-error-boundary"; // Import ChunkErrorBoundary
 
 // Initialize Nunito font with Latin subset
 const nunito = Nunito({
@@ -28,18 +29,20 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning className={nunito.variable}>
       <body className="antialiased min-h-screen bg-background font-nunito">
-        <AuthProvider>
-          <NotificationProvider>
-            <div className="relative flex min-h-screen">
-              <MainSidebar />
-              <SidebarInset className="w-full">
-                <SiteHeader />
-                <div className="flex-1 w-full p-4 md:p-8">{children}</div>
-              </SidebarInset>
-            </div>
+        <NotificationProvider>
+          <AuthProvider>
+            <ChunkErrorBoundary>
+              <div className="relative flex min-h-screen">
+                <MainSidebar />
+                <SidebarInset className="w-full">
+                  <SiteHeader />
+                  <div className="flex-1 w-full p-4 md:p-8">{children}</div>
+                </SidebarInset>
+              </div>
+            </ChunkErrorBoundary>
             <Toaster />
-          </NotificationProvider>
-        </AuthProvider>
+          </AuthProvider>
+        </NotificationProvider>
       </body>
     </html>
   );

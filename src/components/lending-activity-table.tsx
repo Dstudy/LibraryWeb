@@ -122,20 +122,20 @@ export function LendingActivityTable({
       <Table className="w-full">
         <TableHeader>
           <TableRow className="bg-muted/50 hover:bg-muted/50">
-            <TableHead className="min-w-[10rem]">Book Name</TableHead>
-            <TableHead className="min-w-[12rem]">Reader Name</TableHead>
+            <TableHead className="min-w-[10rem]">Tên sách</TableHead>
+            <TableHead className="min-w-[12rem]">Tên bạn đọc</TableHead>
             <TableHead className="min-w-[8rem] whitespace-nowrap">
-              Borrow Date
+              Ngày mượn
             </TableHead>
             <TableHead className="min-w-[8rem] whitespace-nowrap">
-              Due Date
+              Ngày hạn
             </TableHead>
             <TableHead className="min-w-[8rem] whitespace-nowrap">
-              Return Date
+              Ngày trả
             </TableHead>
             <TableHead className="min-w-[6rem]">Status</TableHead>
             {userRole === "librarian" && (
-              <TableHead className="text-right min-w-[8rem]">Actions</TableHead>
+              <TableHead className="text-right min-w-[8rem]"></TableHead>
             )}
           </TableRow>
         </TableHeader>
@@ -146,7 +146,7 @@ export function LendingActivityTable({
                 colSpan={userRole === "librarian" ? 7 : 6}
                 className="h-24 text-center text-muted-foreground"
               >
-                No lending records found.
+                Chưa có lượt mượn nào.
               </TableCell>
             </TableRow>
           ) : (

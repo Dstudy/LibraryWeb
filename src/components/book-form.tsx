@@ -1,20 +1,23 @@
-
 "use client";
 
-import * as React from 'react'; // Added React import
-import type { Book } from '@/lib/types';
-import { bookSchema } from '@/lib/types';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import * as React from "react"; // Added React import
+import type { Book } from "@/lib/types";
+import { bookSchema } from "@/lib/types";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 // Label component is not directly used here, FormLabel is used instead.
 // import { Label } from '@/components/ui/label';
-import { Calendar } from '@/components/ui/calendar';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { CalendarIcon } from 'lucide-react';
-import { format } from 'date-fns';
-import { cn } from '@/lib/utils';
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { CalendarIcon } from "lucide-react";
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
 import {
   Form,
   FormControl,
@@ -23,10 +26,10 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import type { z } from 'zod';
+import type { z } from "zod";
 
 interface BookFormProps {
-  onSubmit: (data: Omit<Book, 'id'>) => void; // id is handled by the backend
+  onSubmit: (data: Omit<Book, "id">) => void; // id is handled by the backend
   initialData?: Book | null;
   onCancel: () => void;
 }
@@ -35,28 +38,28 @@ interface BookFormProps {
 const bookFormSchema = bookSchema.omit({ id: true });
 type BookFormData = z.infer<typeof bookFormSchema>;
 
-
 export function BookForm({ onSubmit, initialData, onCancel }: BookFormProps) {
   const form = useForm<BookFormData>({
     resolver: zodResolver(bookFormSchema),
-    defaultValues: initialData ?
-      {
-        type: initialData.type,
-        name: initialData.name,
-        quantity: initialData.quantity,
-        author: initialData.author,
-        publisher: initialData.publisher,
-        publishYear: initialData.publishYear,
-        importDate: new Date(initialData.importDate), // Ensure it's a Date object
-      } : {
-        type: '',
-        name: '',
-        quantity: 0,
-        author: '',
-        publisher: '',
-        publishYear: new Date().getFullYear(),
-        importDate: new Date(),
-      },
+    defaultValues: initialData
+      ? {
+          type: initialData.type,
+          name: initialData.name,
+          quantity: initialData.quantity,
+          author: initialData.author,
+          publisher: initialData.publisher,
+          publishYear: initialData.publishYear,
+          importDate: new Date(initialData.importDate), // Ensure it's a Date object
+        }
+      : {
+          type: "",
+          name: "",
+          quantity: 0,
+          author: "",
+          publisher: "",
+          publishYear: new Date().getFullYear(),
+          importDate: new Date(),
+        },
   });
 
   // useEffect to reset form when initialData changes (e.g. closing and reopening for a new book)
@@ -73,17 +76,16 @@ export function BookForm({ onSubmit, initialData, onCancel }: BookFormProps) {
       });
     } else {
       form.reset({
-        type: '',
-        name: '',
+        type: "",
+        name: "",
         quantity: 0,
-        author: '',
-        publisher: '',
+        author: "",
+        publisher: "",
         publishYear: new Date().getFullYear(),
         importDate: new Date(),
       });
     }
   }, [initialData, form]);
-
 
   const handleSubmit = (values: BookFormData) => {
     onSubmit(values);
@@ -92,7 +94,10 @@ export function BookForm({ onSubmit, initialData, onCancel }: BookFormProps) {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6 p-1">
+      <form
+        onSubmit={form.handleSubmit(handleSubmit)}
+        className="space-y-6 p-1"
+      >
         <FormField
           control={form.control}
           name="name"
@@ -119,33 +124,43 @@ export function BookForm({ onSubmit, initialData, onCancel }: BookFormProps) {
             </FormItem>
           )}
         />
-         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <FormField
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <FormField
             control={form.control}
             name="quantity"
             render={({ field }) => (
-                <FormItem>
+              <FormItem>
                 <FormLabel>Quantity</FormLabel>
                 <FormControl>
-                    <Input type="number" placeholder="0" {...field} onChange={event => field.onChange(+event.target.value)} />
+                  <Input
+                    type="number"
+                    placeholder="0"
+                    {...field}
+                    onChange={(event) => field.onChange(+event.target.value)}
+                  />
                 </FormControl>
                 <FormMessage />
-                </FormItem>
+              </FormItem>
             )}
-            />
-            <FormField
+          />
+          <FormField
             control={form.control}
             name="publishYear"
             render={({ field }) => (
-                <FormItem>
+              <FormItem>
                 <FormLabel>Publish Year</FormLabel>
                 <FormControl>
-                    <Input type="number" placeholder="YYYY" {...field} onChange={event => field.onChange(+event.target.value)} />
+                  <Input
+                    type="number"
+                    placeholder="YYYY"
+                    {...field}
+                    onChange={(event) => field.onChange(+event.target.value)}
+                  />
                 </FormControl>
                 <FormMessage />
-                </FormItem>
+              </FormItem>
             )}
-            />
+          />
         </div>
         <FormField
           control={form.control}
@@ -219,11 +234,10 @@ export function BookForm({ onSubmit, initialData, onCancel }: BookFormProps) {
             Cancel
           </Button>
           <Button type="submit" className="bg-primary hover:bg-primary/90">
-            {initialData ? 'Update Book' : 'Add Book'}
+            {initialData ? "Cập nhật" : "Thêm sách"}
           </Button>
         </div>
       </form>
     </Form>
   );
 }
-

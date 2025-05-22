@@ -35,12 +35,12 @@ export function ReaderTable({
         <TableHeader>
           <TableRow>
             <TableHead className="w-[100px]">ID</TableHead>
-            <TableHead>Name</TableHead>
-            <TableHead>Phone</TableHead>
-            <TableHead>Address</TableHead>
-            <TableHead>Date of Birth</TableHead>
-            <TableHead>Gender</TableHead>
-            {isLibrarian && <TableHead className="text-right">Actions</TableHead>}
+            <TableHead>Tên</TableHead>
+            <TableHead>SĐT</TableHead>
+            <TableHead>Địa chỉ</TableHead>
+            <TableHead>Ngày sinh</TableHead>
+            <TableHead>Giới tính</TableHead>
+            {isLibrarian && <TableHead className="text-right"></TableHead>}
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -61,7 +61,9 @@ export function ReaderTable({
                 <TableCell>{reader.phone || "-"}</TableCell>
                 <TableCell>{reader.address || "-"}</TableCell>
                 <TableCell>
-                  {reader.dateOfBirth ? formatDate(new Date(reader.dateOfBirth)) : "-"}
+                  {reader.dateOfBirth
+                    ? formatDate(new Date(reader.dateOfBirth))
+                    : "-"}
                 </TableCell>
                 <TableCell>{reader.gender || "-"}</TableCell>
                 {isLibrarian && (

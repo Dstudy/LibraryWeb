@@ -59,11 +59,11 @@ export default function LendingPage() {
         setLendingRecords([]);
       }
     } catch (error) {
-      console.error("Error fetching lending records:", error);
+      console.error("Lỗi khi tải dữ liệu mượn trả:", error);
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Could not fetch lending records from the server.",
+        title: "Lỗi",
+        description: "Không thể tải dữ liệu mượn trả từ máy chủ.",
       });
     } finally {
       setIsDataLoading(false);
@@ -86,7 +86,7 @@ export default function LendingPage() {
       const now = new Date();
       return dueDate < now;
     } catch (error) {
-      console.error("Error checking if record is overdue:", error);
+      console.error("Lỗi khi kiểm tra sách quá hạn:", error);
       return false;
     }
   }, []);
@@ -106,7 +106,7 @@ export default function LendingPage() {
       const now = new Date();
       return dueDate >= now;
     } catch (error) {
-      console.error("Error checking if record is active:", error);
+      console.error("Lỗi khi kiểm tra sách đang mượn:", error);
       return false;
     }
   }, []);
@@ -165,7 +165,7 @@ export default function LendingPage() {
   if (authIsLoading || !isAuthenticated) {
     return (
       <div className="flex items-center justify-center min-h-[calc(100vh-4rem)]">
-        <p className="text-muted-foreground">Loading...</p>
+        <p className="text-muted-foreground">Đang tải...</p>
       </div>
     );
   }
@@ -191,15 +191,15 @@ export default function LendingPage() {
               <CardTitle className="text-2xl flex items-center">
                 <ArrowRightLeft className="mr-3 h-7 w-7 text-accent" />
                 {currentUser?.role === "librarian"
-                  ? "Lending Activity"
-                  : "My Borrowing History"}
+                  ? "Hoạt động mượn trả"
+                  : "Lịch sử mượn sách của tôi"}
               </CardTitle>
               {currentUser?.role === "librarian" && (
                 <Button
                   onClick={() => setIsBorrowDialogOpen(true)}
                   className="bg-primary hover:bg-primary/90"
                 >
-                  <PlusCircle className="mr-2 h-5 w-5" /> Borrow Book
+                  <PlusCircle className="mr-2 h-5 w-5" /> Mượn sách
                 </Button>
               )}
             </div>
@@ -209,11 +209,11 @@ export default function LendingPage() {
                 <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                 <Input
                   type="search"
-                  placeholder="Search by reader name, ID or book name..."
+                  placeholder="Tìm kiếm theo tên bạn đọc, mã số hoặc tên sách..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-10 w-full"
-                  aria-label="Search lending records"
+                  aria-label="Tìm kiếm lịch sử mượn trả"
                 />
               </div>
 
@@ -225,7 +225,7 @@ export default function LendingPage() {
               >
                 <TabsList className="grid grid-cols-4 w-full">
                   <TabsTrigger value="all">
-                    All
+                    Tất cả
                     {lendingRecords.length > 0 && (
                       <span className="ml-1 text-xs bg-primary/20 rounded-full px-2 py-0.5">
                         {lendingRecords.length}
@@ -233,7 +233,7 @@ export default function LendingPage() {
                     )}
                   </TabsTrigger>
                   <TabsTrigger value="borrowed">
-                    Active
+                    Đang mượn
                     {(() => {
                       // Count active records using the same function as the filter
                       const activeCount =
@@ -247,7 +247,7 @@ export default function LendingPage() {
                     })()}
                   </TabsTrigger>
                   <TabsTrigger value="overdue">
-                    Overdue
+                    Quá hạn
                     {(() => {
                       // Count overdue records using the same function as the filter
                       const overdueCount =
@@ -261,7 +261,7 @@ export default function LendingPage() {
                     })()}
                   </TabsTrigger>
                   <TabsTrigger value="returned">
-                    Returned
+                    Đã trả
                     {(() => {
                       // Count returned records using the same function as the filter
                       const returnedCount =
@@ -284,8 +284,8 @@ export default function LendingPage() {
             <div className="flex justify-center items-center h-64">
               <p className="text-muted-foreground">
                 {currentUser?.role === "librarian"
-                  ? "Loading lending records..."
-                  : "Loading your borrowing history..."}
+                  ? "Đang tải dữ liệu mượn trả..."
+                  : "Đang tải lịch sử mượn sách của bạn..."}
               </p>
             </div>
           ) : (
@@ -293,16 +293,26 @@ export default function LendingPage() {
               <div className="mb-4 text-sm text-muted-foreground">
                 {searchTerm && (
                   <span>
-                    Search results for <strong>"{searchTerm}"</strong>:{" "}
+                    Kết quả tìm kiếm cho <strong>"{searchTerm}"</strong>:{" "}
                   </span>
                 )}
                 <span>
-                  Showing <strong>{filteredRecords.length}</strong> of{" "}
-                  <strong>{lendingRecords.length}</strong> records
+                  Hiển thị <strong>{filteredRecords.length}</strong> trong số{" "}
+                  <strong>{lendingRecords.length}</strong> bản ghi
                   {statusFilter !== "all" && (
                     <span>
                       {" "}
-                      (filtered by <strong>{statusFilter}</strong>)
+                      (lọc theo{" "}
+                      <strong>
+                        {statusFilter === "borrowed"
+                          ? "đang mượn"
+                          : statusFilter === "overdue"
+                          ? "quá hạn"
+                          : statusFilter === "returned"
+                          ? "đã trả"
+                          : statusFilter}
+                      </strong>
+                      )
                     </span>
                   )}
                 </span>

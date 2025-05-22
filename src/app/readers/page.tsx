@@ -220,7 +220,7 @@ export default function ReadersPage() {
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
             <CardTitle className="text-2xl flex items-center">
               <UserRound className="mr-3 h-7 w-7 text-accent" />
-              Readers
+              Bạn đọc
             </CardTitle>
             <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
               {currentUser?.role === "librarian" && (
@@ -228,7 +228,7 @@ export default function ReadersPage() {
                   onClick={handleAddReader}
                   className="bg-primary hover:bg-primary/90"
                 >
-                  <PlusCircle className="mr-2 h-5 w-5" /> Add Reader
+                  <PlusCircle className="mr-2 h-5 w-5" /> Thêm bạn đọc
                 </Button>
               )}
               <div className="relative w-full sm:w-64">
@@ -301,10 +301,7 @@ export default function ReadersPage() {
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the
-              reader and remove their data from the system.
-            </AlertDialogDescription>
+            <AlertDialogDescription>Chắc chưa?.</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
