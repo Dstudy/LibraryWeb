@@ -122,8 +122,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }),
       });
 
-      // Refresh notifications in the header
-      refreshNotifications();
+      // Refresh notifications in the header if the function exists
+      if (refreshNotifications) {
+        refreshNotifications();
+      }
     } catch (error) {
       console.error("Lỗi khi tạo thông báo sách quá hạn:", error);
     }
@@ -150,7 +152,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       localStorage.removeItem("currentUser");
     }
     setIsLoading(false);
-  }, [toast, refreshNotifications]);
+  }, []);
 
   const login = async (
     username: string,

@@ -13,12 +13,14 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
-  SidebarFooter,
   SidebarSeparator,
 } from "@/components/ui/sidebar";
+import { useAuth } from "@/contexts/auth";
 
 export function MainSidebar() {
   const pathname = usePathname();
+  const { currentUser } = useAuth();
+  const isLibrarian = currentUser?.role === "librarian";
 
   // Don't show sidebar on login page
   if (pathname === "/login") {
@@ -64,18 +66,20 @@ export function MainSidebar() {
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton
-                asChild
-                isActive={pathname.startsWith("/readers")}
-                tooltip="Readers"
-              >
-                <Link href="/readers">
-                  <Users className="h-6 w-6 text-white" />
-                  <span>Bạn đọc</span>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
+            {isLibrarian && (
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  isActive={pathname.startsWith("/readers")}
+                  tooltip="Readers"
+                >
+                  <Link href="/readers">
+                    <Users className="h-6 w-6 text-white" />
+                    <span>Bạn đọc</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            )}
           </SidebarMenu>
         </SidebarContent>
       </Sidebar>

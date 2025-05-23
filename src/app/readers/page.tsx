@@ -5,8 +5,8 @@ import { ReaderTable } from "@/components/reader-table";
 import { ReaderForm } from "@/components/reader-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { PlusCircle, Search as SearchIcon, UserRound } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { PlusCircle, Search as SearchIcon } from "lucide-react";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -74,16 +74,31 @@ export default function ReadersPage() {
     }
   }, [isAuthenticated, toast]);
 
-  // Load data on component mount
+  // Load data on component mount and check permissions
   useEffect(() => {
     if (authIsLoading) return;
 
     if (!isAuthenticated) {
       router.push("/login");
+    } else if (currentUser?.role !== "librarian") {
+      // Redirect non-librarian users to the home page
+      toast({
+        variant: "destructive",
+        title: "Không có quyền truy cập",
+        description: "Bạn không có quyền truy cập trang quản lý bạn đọc.",
+      });
+      router.push("/");
     } else {
       fetchData();
     }
-  }, [isAuthenticated, authIsLoading, router, fetchData]);
+  }, [
+    isAuthenticated,
+    authIsLoading,
+    router,
+    fetchData,
+    currentUser?.role,
+    toast,
+  ]);
 
   // Filter readers based on search term
   const filteredReaders = readers.filter((reader) => {

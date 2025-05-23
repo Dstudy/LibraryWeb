@@ -54,7 +54,7 @@ export default function LoginPage() {
       <Card className="w-full max-w-md shadow-2xl">
         <CardHeader className="text-center">
           <CardTitle className="text-3xl font-bold text-primary">
-            Đăng nhập BiblioManager
+            Đăng nhập Thư viện
           </CardTitle>
           <CardDescription>
             Truy cập hệ thống quản lý thư viện của bạn.

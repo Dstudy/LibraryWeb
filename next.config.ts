@@ -5,6 +5,10 @@ const nextConfig: NextConfig = {
     // The turbo option has been updated in Next.js 15.2.3
     // It now expects an object instead of a boolean
   },
+  // Hide development mode indicators (including Turbopack icon)
+  devIndicators: {
+    position: 'bottom-right',
+  },
   typescript: {
     ignoreBuildErrors: true,
   },
