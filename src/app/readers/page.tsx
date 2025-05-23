@@ -250,7 +250,7 @@ export default function ReadersPage() {
               {currentUser?.role === "librarian" && (
                 <Button
                   onClick={handleAddReader}
-                  className="bg-primary hover:bg-primary/90"
+                  className="bg-accent hover:bg-accent/90 text-accent-foreground"
                 >
                   <PlusCircle className="mr-2 h-5 w-5" /> Thêm bạn đọc
                 </Button>

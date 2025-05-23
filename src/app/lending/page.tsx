@@ -271,7 +271,7 @@ export default function LendingPage() {
               {currentUser?.role === "librarian" && (
                 <Button
                   onClick={() => setIsBorrowDialogOpen(true)}
-                  className="bg-primary hover:bg-primary/90"
+                  className="bg-accent hover:bg-accent/90 text-accent-foreground"
                 >
                   <PlusCircle className="mr-2 h-5 w-5" /> Mượn sách
                 </Button>

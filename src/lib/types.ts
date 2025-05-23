@@ -5,9 +5,9 @@ export const bookSchema = z.object({
   id: z.union([z.string(), z.number()]).optional(),
   type: z.string().min(1, { message: "Type is required." }),
   name: z.string().min(1, { message: "Name is required." }),
-  quantity: z.number().int().min(0, { message: "Total quantity must be a non-negative integer." }),
+  quantity: z.number().int().min(1, { message: "Total quantity must be a non-negative integer." }),
   author: z.string().min(1, { message: "Author is required." }),
-  publisher: z.string().min(1, { message: "Publisher is required." }),
+  publisher: z.string().optional(),
   publishYear: z.number().int().min(1000, { message: "Enter a valid 4-digit year." }).max(new Date().getFullYear() + 5, { message: "Year cannot be too far in the future."}),
   importDate: z.date({ required_error: "Import date is required." }),
   borrowedCount: z.number().int().min(0).default(0).optional(), // Number of copies currently borrowed
